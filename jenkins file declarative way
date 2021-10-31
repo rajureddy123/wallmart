@@ -1,0 +1,65 @@
+pipeline
+{
+    agent any
+    tools
+    {
+        maven "maven3.6.2"
+    }
+        stages
+        {
+            stage ('CheckoutCode')
+            {
+                steps
+                {
+                    git branch: 'development', credentialsId: '49007f2a-501f-42ca-8a91-cc14854f35c1', url: 'https://github.com/rajureddy123/maven-web-application.git'
+                    
+                }
+            }
+            stage ('Build')
+            {
+                steps
+                {
+                    sh "mvn clean package"
+                }
+            }
+            stage ('Execute SonarQube Report')
+            {
+                steps
+                {
+                    sh "mvn sonar:sonar"
+                }
+            }
+            stage ('Upload Artifact into Nexus Repo')
+            {
+                steps
+                {
+                    sh "mvn deploy"
+                }
+            }
+            stage ('Deploy App into Tomcat Server')
+            {
+                steps
+                {sshagent(['66f01efa-a1c3-49bb-b168-4e88578471ad']) {
+            sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.154.4.172:/opt/apache-tomcat-9.0.53/webapps/"
+                }
+                }
+            }
+        }
+        
+        post
+        {
+            
+            success
+            {
+               emailext body: '''Regards
+Raju technologies
+mob nu: 7090229337''', subject: 'build success!!', to: 'rajashekarkick88@gmail.com'
+            } 
+            failure
+           {
+                emailext body: '''Regards
+Raju technologies
+mob nu: 7090229337''', subject: 'build success!!', to: 'rajashekarkick88@gmail.com'
+           }
+        }
+}
