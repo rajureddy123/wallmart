@@ -59,7 +59,7 @@ mob nu: 7090229337''', subject: 'build success!!', to: 'rajashekarkick88@gmail.c
            {
                 emailext body: '''Regards
 Raju technologies
-mob nu: 7090229337''', subject: 'build success!!', to: 'rajashekarkick88@gmail.com'
+mob nu: 7090229337''', subject: 'build failed!!', to: 'rajashekarkick88@gmail.com'
            }
         }
 }
